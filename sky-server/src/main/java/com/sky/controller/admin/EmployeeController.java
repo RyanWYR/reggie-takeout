@@ -84,7 +84,7 @@ public class EmployeeController {
      */
     @PostMapping
     @ApiOperation("新增员工接口")
-    public Result<Employee> save(@RequestBody EmployeeDTO employeeDTO) {
+    public Result save(@RequestBody EmployeeDTO employeeDTO) {
         log.info("新增员工:{}", employeeDTO);
         employeeService.save(employeeDTO);
         return Result.success();
@@ -101,5 +101,19 @@ public class EmployeeController {
         log.info("员工分页查询，参数为：{}", employeePageQueryDTO);
         PageResult result = employeeService.pageQuery(employeePageQueryDTO);
         return Result.success(result);
+    }
+
+    /**
+     * 员工账号启用禁用
+     * @param status
+     * @param id
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("员工账号启用禁用")
+    public Result startOrStop(@PathVariable Integer status,Long id) {
+        log.info("启用禁用员工账号：{},{}", status, id);
+        employeeService.startOrStop(status, id);
+        return Result.success();
     }
 }
