@@ -21,7 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -85,7 +87,7 @@ public class DishServiceImpl implements DishService {
         //判断当前菜品是否能被删除---是否存在起售中的菜品？？
         for (Long id : ids) {
             Dish dish = dishMapper.getById(id);
-            if (dish.getStatus() == StatusConstant.ENABLE) {
+            if (Objects.equals(dish.getStatus(), StatusConstant.ENABLE)) {
                 //当前菜品处于起售中，不能删除
                 throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
             }
@@ -157,5 +159,22 @@ public class DishServiceImpl implements DishService {
                 .id(id)
                 .build();
         dishMapper.update(dish);
+    }
+
+    /**
+     * 根据分类id查询菜品
+     *
+     * @param categoryId
+     * @return
+     */
+    @Override
+    public List<Dish> list(Long categoryId) {
+        Dish dish = Dish.builder()
+                .categoryId(categoryId)
+                .status(StatusConstant.ENABLE)
+                .build();
+
+        List<Dish> dishes = dishMapper.list(dish);
+        return dishes;
     }
 }
